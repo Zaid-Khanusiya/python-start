@@ -16,7 +16,6 @@ def index():
     users = User.query.all()
     return str([user.name for user in users])
 
-
 @app.route('/add/<user>')
 def add_user(user):
     new_user = User(name=user)
