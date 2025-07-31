@@ -1,0 +1,9 @@
+<h2>Edit Order</h2>
+    <form method="POST">
+        Order ID: <input type="text" name="order_id" value="{{ order.order_id }}"><br><br>
+        Customer ID: <input type="text" name="customer_id" value="{{ order.customer_id }}"><br><br>
+        Order Date: <input type="text" name="order_date" value="{{ order.order_date }}"><br><br>
+        Total Amount: <input type="text" name="total_amount" value="{{ order.total_amount }}"><br><br>
+        Status: <input type="text" name="status" value="{{ order.status }}"><br><br>
+        <input type="submit" value="Update Order">
+    </form>
