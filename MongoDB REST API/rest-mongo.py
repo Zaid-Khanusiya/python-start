@@ -27,7 +27,7 @@ class User(Resource):
     def post(self):
         data = request.get_json()
         users_collection.insert_one(data)
-        return {"msg": "User added"}
+        return "User has successfully been added!"
 
     def get(self):
         users = list(users_collection.find({}, {"_id": 0}))
@@ -37,7 +37,7 @@ class Post(Resource):
     def post(self):
         data = request.get_json()
         posts_collection.insert_one(data)
-        return {"msg": "Post added"}
+        return "Your post has successfully been added!"
 
     def get(self):
         posts = list(posts_collection.find({}, {"_id": 0}))

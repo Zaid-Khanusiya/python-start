@@ -1,6 +1,6 @@
 from flask import Flask,redirect,url_for,request,render_template
 app = Flask(__name__)
-upload_path = '/Users/zaidkhanusiya/Zaid/Downloads/Python Office/upload_files/'
+upload_path = '/Users/-----------/Zaid/Downloads/Python Office/upload_files/'
 
 @app.route('/')
 def home():
