@@ -42,10 +42,11 @@ class Home(Resource):
 
 class AddCustomer(Resource):
     def post(self):
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
-        email = request.form['email']
-        phone = request.form['phone']
+        data = request.get_json()
+        first_name = data.get('first_name')
+        last_name = data.get('last_name')
+        email = data.get('email')
+        phone = data.get('phone')
         new_customer = Customer(
             first_name=first_name,
             last_name=last_name,
@@ -56,17 +57,15 @@ class AddCustomer(Resource):
         db.session.add(new_customer)
         db.session.commit()
         return f"Customer {first_name} added successfully!"
-    
     def get(self):
-        return make_response(render_template('add_customer.html'))
-        # this make_response is used because we want to tell flask-restful to return template as it is and not in json format
+        return "Send a POST request with JSON data to add a customer."
     
-
 class AddOrder(Resource):
     def post(self):
-        customer_id = request.form['customer_id']
-        total_amount = request.form['total_amount']
-        status = request.form['status']
+        data = request.get_json()
+        customer_id = data.get('customer_id')
+        total_amount = data.get('total_amount')
+        status = data.get('status')
         new_order = Order(
             customer_id=customer_id,
             order_date=datetime.now(),
@@ -77,33 +76,47 @@ class AddOrder(Resource):
         db.session.commit()
         return "Order added successfully!"
     def get(self):
-        return make_response(render_template('add_order.html'))
+        return "Send a POST request with JSON data to add an order."
 
 class EditCustomer(Resource):
-    def post(self, id):
+    def put(self, id):
         customer = Customer.query.get_or_404(id)
-        customer.first_name = request.form['first_name']
-        customer.last_name = request.form['last_name']
-        customer.email = request.form['email']
-        customer.phone = request.form['phone']
+        data = request.get_json()
+        customer.first_name = data.get('first_name', customer.first_name)
+        customer.last_name = data.get('last_name', customer.last_name)
+        customer.email = data.get('email', customer.email)
+        customer.phone = data.get('phone', customer.phone)
         db.session.commit()
         return f"Customer {customer.first_name} updated successfully!"
     def get(self, id):
         customer = Customer.query.get_or_404(id)
-        return make_response(render_template('edit_customer.html', user=customer))
+        return {
+            "id": customer.id,
+            "first_name": customer.first_name,
+            "last_name": customer.last_name,
+            "email": customer.email,
+            "phone": customer.phone
+        }
 
 class EditOrder(Resource):
-    def post(self, id):
+    def put(self, id):
         order = Order.query.get_or_404(id)
-        order.customer_id = request.form['customer_id']
-        order.order_date = datetime.now()
-        order.total_amount = request.form['total_amount']
-        order.status = request.form['status']
+        data = request.get_json()
+        order.customer_id = data.get('customer_id', order.customer_id)
+        order.order_date = datetime.now()  # always update to now
+        order.total_amount = data.get('total_amount', order.total_amount)
+        order.status = data.get('status', order.status)
         db.session.commit()
         return f"Order {order.order_id} updated successfully!"
     def get(self, id):
         order = Order.query.get_or_404(id)
-        return make_response(render_template('edit_order.html', order=order))
+        return {
+            "order_id": order.order_id,
+            "customer_id": order.customer_id,
+            "order_date": order.order_date.strftime("%Y-%m-%d %H:%M:%S"),
+            "total_amount": order.total_amount,
+            "status": order.status
+        }
 
 class DeleteCustomer(Resource):
     def delete(self, id):
